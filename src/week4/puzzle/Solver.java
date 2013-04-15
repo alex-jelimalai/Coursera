@@ -1,6 +1,7 @@
 package week4.puzzle;
 
 import java.util.Comparator;
+import java.util.Date;
 
 import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.Stack;
@@ -13,12 +14,14 @@ import edu.princeton.cs.introcs.StdOut;
  */
 public class Solver {
 
-    private NodeComparator nodeComparator  = new NodeComparator();
+    private NodeComparator nodeComparator = new NodeComparator();
     private MinPQ<Node> minPQ = new MinPQ<Node>(nodeComparator);
     private MinPQ<Node> minTwinPQ = new MinPQ<Node>(nodeComparator);
     private Stack<Board> solution;
-    private int moves = - 1;
+    private int moves = -1;
     private boolean isSolvable = true;
+    private Node node;
+    private Node twinNode;
 
 
     // find a solution to the initial board (using the A* algorithm)
@@ -26,11 +29,15 @@ public class Solver {
         if (initial == null) {
             throw new NullPointerException("Initial Board cannot be null");
         }
-        Node node = getSolutionNode(new Node(initial, null));
 
-        if (isSolvable()) {
+        final Date date1 = new Date();
+        findSolutionNode(new Node(initial, null));
+        if (isSolvable) {
             populateSolution(node);
         }
+        final Date date2 = new Date();
+        System.out.println("Time: " + (date2.getTime() - date1.getTime()) / 1000);
+
     }
 
 
@@ -45,23 +52,28 @@ public class Solver {
     }
 
 
-    private Node getSolutionNode(final Node aInitialNode) {
-        Node node = aInitialNode;
+    private void findSolutionNode(final Node aInitialNode) {
+        node = aInitialNode;
         minPQ.insert(node);
-        Node twinNode = new Node(node.getBoard().twin(), null);
+        twinNode = new Node(node.getBoard().twin(), null);
         minTwinPQ.insert(twinNode);
-        while (true) {
-            if (isGoalNode(node)) {
-               return node;
-            }
-            if(isGoalNode(twinNode)){
-                isSolvable = false;
-                return null;
-            }
+        while (isGoalNotFound()) {
             populateCollections(node, twinNode);
             node = minPQ.delMin();
-            twinNode =  minTwinPQ.delMin();
+            twinNode = minTwinPQ.delMin();
         }
+    }
+
+
+    private boolean isGoalNotFound() {
+        if (isGoalNode(node)) {
+            return false;
+        }
+        if (isGoalNode(twinNode)) {
+            isSolvable = false;
+            return false;
+        }
+        return true;
     }
 
 
@@ -112,13 +124,12 @@ public class Solver {
     public static void main(String[] args) {
         // create initial board from file
 
-        In in = new In("puzzle09.txt");
+        In in = new In(args[0]);
         int N = in.readInt();
         int[][] blocks = new int[N][N];
         for (int i = 0; i < N; i++)
             for (int j = 0; j < N; j++)
                 blocks[i][j] = in.readInt();
-
 
         Board initial = new Board(blocks);
 
@@ -159,7 +170,7 @@ public class Solver {
 
 
         private int getPriority() {
-            return board.hamming() + step;
+            return board.manhattan() + step;
         }
 
 

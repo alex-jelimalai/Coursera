@@ -108,7 +108,7 @@ public class BoardTest {
 
     @Test
     public void equalsBoardFalse() {
-        final Board board = new Board(new int[][] { { 1, 2, 3 }, { 5, 5, 6 }, { 7, 8, 9 } });
+        final Board board = new Board(new int[][] { { 1, 2, 3 }, { 5, 5, 6 }, { 7, 8, 0 } });
         assertFalse("Not false equals when different elements", resolvedBoard3x3.equals(board));
     }
 

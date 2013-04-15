@@ -73,7 +73,7 @@ public class SolverTest {
         final Board initial = new Board(new int[][] { { 2, 1 },
                                                       { 0, 3 } });
         Solver solver = new Solver(initial);
-        assertEquals("There are moves in a infeasible board", 0, solver.moves());
+        assertEquals("There are moves in a infeasible board", -1, solver.moves());
         assertNull("There are solution in a infeasible board", solver.solution());
         assertFalse("The solver can solve an infeasible board", solver.isSolvable());
         System.out.println("No Solution");
