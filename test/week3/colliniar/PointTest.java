@@ -26,7 +26,7 @@ public class PointTest {
     @Test
     public void toString_Format() {
         Point point = new Point(1, 2);
-        assertEquals("Incorrect format", 1 + " " + 2, point.toString());
+        assertEquals("Incorrect format", "("+1 + ", " + 2+")", point.toString());
     }
 
 
